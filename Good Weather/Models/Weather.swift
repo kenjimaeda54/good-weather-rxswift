@@ -17,3 +17,5 @@ struct Main: Decodable {
 	let temp: Double
 	let humidity: Double
 }
+
+
