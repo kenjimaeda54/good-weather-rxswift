@@ -11,7 +11,7 @@ Aprender a utilizar o RxCocoa para requisições em API
 - Caso eu utilize o value como no último exemplo. Cada letra digitada sera disparado um evento 
 
 
-```swfit
+```swift
 txtInputCity.rx.controlEvent(.editingDidEndOnExit).asObservable().map {self.txtInputCity.text}.subscribe(onNext:{ city in
 			guard let cityFetch = city else {return}
 			
@@ -42,7 +42,7 @@ txtInputCity.rx.controlEvent(.editingDidEndOnExit).asObservable().map {self.txtI
 - Para intervalos o melhor método de comparação, utiliza  o operador [~=](https://betterprogramming.pub/what-is-the-operator-in-swift-7f6bc7623023) 
 - No terceiro exemplo estou substituindo  o bind por driver
 
-```swift
+```swfit
     //primerio exemplo
 		let search = URLRequest.load(resource).observe(on: MainScheduler.instance).catchAndReturn(Weather.empty)
 
