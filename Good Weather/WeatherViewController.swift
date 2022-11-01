@@ -26,7 +26,8 @@ class WeatherViewController: UIViewController {
 		txtInputCity.layer.borderWidth = 0.5
 		txtInputCity.layer.cornerRadius = 3
 		
-		txtInputCity.rx.value.subscribe(onNext:{ city in
+		//aqui estou controlando o evento do text field
+		txtInputCity.rx.controlEvent(.editingDidEndOnExit).asObservable().map {self.txtInputCity.text}.subscribe(onNext:{ city in
 			guard let cityFetch = city else {return}
 			
 			if cityFetch.isEmpty {
@@ -37,19 +38,86 @@ class WeatherViewController: UIViewController {
 			
 		}).disposed(by: disposed)
 		
+		//metodo abaixo sempre sera feito uma nova requisicao na api
+		//		txtInputCity.rx.value.subscribe(onNext:{ city in
+		//			guard let cityFetch = city else {return}
+		//
+		//			if cityFetch.isEmpty {
+		//				self.displayWeather(nil)
+		//			}else {
+		//				self.fetchWeather(cityFetch)
+		//			}
+		//
+		//		}).disposed(by: disposed)
+		
 	}
 	
 	private func fetchWeather(_ city: String) {
 		
-		guard let cityEncoded = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),let url = URL(string: Weather.urlRequest(cityEncoded)) else {return}
+		guard let cityPercentEncoding = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed), let url = URL(string: Weather.urlRequest(cityPercentEncoding)) else {return}
 		
-		let resource =  Resource<Weather>(url: url)
-		URLRequest.load(resource)
-			.catchAndReturn(Weather.empty)
+		//precisa do tipo porque instanciamos reouser como T
+		let resource = Resource<Weather>(url: url)
+		
+		//com observe e possivel realizar requisicoes conforme usuario digita
+		//assim gera uma experiencia mais agradavel
+		
+		//para capturar o erro e necessario criar um elemento que sera
+		//responsavel para ser exibido caso ocorra erro
+		//		URLRequest.load(resource)
+		//			.observe(on: MainScheduler.instance)
+		//			.catchAndReturn(Weather.empty)
+		//			.subscribe(onNext: {[self]weather in
+		//				displayWeather(weather?.main)
+		//			}).disposed(by: disposed)
+		
+		//pode usar o rx cocoa usando bind
+//		let search = URLRequest.load(resource).observe(on: MainScheduler.instance).catchAndReturn(Weather.empty)
+//
+//		search.map { weather in
+//
+//			//precisa retornar uma string
+//			guard let weatherMain = weather else {return ""}
+//			return "\(weatherMain.main.humidity)💦"
+//
+//		}.bind(to: labelHumitidy.rx.text).disposed(by: disposed)
+//
+//		search.map { weather in
+//
+//			//precisa retornar uma string
+//			guard let weatherMain = weather else {return ""}
+//			return "\(weatherMain.main.temp)℃"
+//
+//		}.bind(to: labelTemperature.rx.text).disposed(by: disposed)
+//
+		
+		//usanmdo driver e recuperando o error
+	 let search =	URLRequest.load(resource)
+			.retry(3) // ira recuperar 3 vezes e apos isto vai gerar erro
 			.observe(on: MainScheduler.instance)
-			.subscribe(onNext:{[self] weather in
-				displayWeather(weather?.main)
-		}).disposed(by: disposed)
+			.catch { error in
+			print(error.localizedDescription)
+			return Observable.just(Weather.empty)
+		}.asDriver(onErrorJustReturn: Weather.empty)
+		
+		search.map { "\($0.main.humidity)💦" }.drive(labelHumitidy.rx.text).disposed(by: disposed)
+		
+		search.map {  "\($0.main.temp)℃" }.drive(labelTemperature.rx.text).disposed(by: disposed)
+		
+		//usando driver
+//
+//		let search = URLRequest.load(resource).observe(on: MainScheduler.instance).asDriver(onErrorJustReturn: Weather.empty)
+//
+//		search.map { weatherMain in
+//			guard let weather = weatherMain else {return ""}
+//			return "\(weather.main.humidity)💦"
+//		}.drive(labelHumitidy.rx.text).disposed(by: disposed)
+//
+//		search.map { weatherMain in
+//			guard let weather = weatherMain else {return ""}
+//			return "\(weather.main.temp)℃"
+//		}.drive(labelTemperature.rx.text).disposed(by: disposed)
+		
 		
 	}
 	

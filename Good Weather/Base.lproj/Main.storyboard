@@ -23,7 +23,7 @@
                                     <constraint firstAttribute="width" constant="256" id="N2a-r3-qfN"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="19"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N6p-U1-2on">
                                 <rect key="frame" x="167" y="408" width="56" height="28"/>
