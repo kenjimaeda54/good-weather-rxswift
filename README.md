@@ -1,7 +1,7 @@
 # Good Weather
 Pequena aplicação consumindo [weather api](https://openweathermap.org/api)
 
-# Motivacao
+# Motivação
 Aprender a utilizar o RxCocoa para requisições em API
 
 
