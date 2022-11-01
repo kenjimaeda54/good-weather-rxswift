@@ -42,7 +42,7 @@ txtInputCity.rx.controlEvent(.editingDidEndOnExit).asObservable().map {self.txtI
 - Para intervalos o melhor método de comparação, utiliza  o operador [~=](https://betterprogramming.pub/what-is-the-operator-in-swift-7f6bc7623023) 
 - No terceiro exemplo estou substituindo  o bind por driver
 
-```swfit
+```swift
     //primerio exemplo
 		let search = URLRequest.load(resource).observe(on: MainScheduler.instance).catchAndReturn(Weather.empty)
 
